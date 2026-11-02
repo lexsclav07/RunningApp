@@ -43,9 +43,4 @@ module.exports = defineConfig([
     ignores: ['dist/*'],
   },
   corePurity,
-  {
-    // Expo template file (removed with the template in Task 9); it sets a hydration flag in an effect on purpose.
-    files: ['src/hooks/use-color-scheme.web.ts'],
-    rules: { 'react-hooks/set-state-in-effect': 'off' },
-  },
 ]);

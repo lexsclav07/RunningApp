@@ -1,6 +1,8 @@
 import {
   CueEngine,
   RunSession,
+  barScale,
+  primaryReading,
   checkpointInterval as autoCheckpointInterval,
   resolveTargetFinish,
   toLiveActivityPayload,
@@ -56,6 +58,8 @@ export interface ControllerState {
   /** 'foreground' = only "While Using" permission: tracking stops when the app leaves the screen. */
   tracking: 'background' | 'foreground' | 'simulated' | null;
   hasBaselineAndGhost: boolean;
+  /** Half-range (s) of the performance bar; grows quickly and shrinks reluctantly (see barScale). */
+  barScale: number;
   snapshot: LiveSnapshot | null;
 }
 
@@ -77,6 +81,7 @@ const IDLE: ControllerState = {
   source: 'gps',
   tracking: null,
   hasBaselineAndGhost: false,
+  barScale: 10,
   snapshot: null,
 };
 
@@ -100,6 +105,7 @@ interface Active {
   lastActivityKey: string;
   stopTicker: (() => void) | null;
   tracking: ControllerState['tracking'];
+  barScale: number | null;
 }
 
 /**
@@ -329,6 +335,7 @@ export class RunController {
       lastActivityKey: '',
       stopTicker: null,
       tracking: null,
+      barScale: null,
     };
   }
 
@@ -393,6 +400,8 @@ export class RunController {
     const a = this.active;
     if (!a) return;
     const snap = a.session.snapshot();
+    const adv = primaryReading(snap)?.reading?.advantage ?? 0;
+    a.barScale = barScale(Math.abs(adv), a.barScale);
     this.state = {
       status: 'active',
       runId: a.runId,
@@ -402,6 +411,7 @@ export class RunController {
       source: a.persisted.source,
       tracking: a.tracking,
       hasBaselineAndGhost: snap.route !== null && snap.route.ghost !== null,
+      barScale: a.barScale,
       snapshot: snap,
     };
     this.emit();
