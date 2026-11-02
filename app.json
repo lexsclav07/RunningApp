@@ -54,7 +54,14 @@
         }
       ],
       "expo-sqlite",
-      "expo-sharing"
+      "expo-sharing",
+      [
+        "expo-widgets",
+        {
+          "groupIdentifier": "group.com.lexsclav.ghostpace",
+          "frequentUpdates": true
+        }
+      ]
     ],
     "experiments": {
       "typedRoutes": true,
