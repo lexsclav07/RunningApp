@@ -1,4 +1,5 @@
 /** @jest-environment node */
+/// <reference types="node" />
 import { afterEach, beforeEach, describe, expect, it } from '@jest/globals';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';

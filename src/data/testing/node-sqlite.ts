@@ -1,3 +1,4 @@
+/// <reference types="node" />
 import { DatabaseSync } from 'node:sqlite';
 
 import { migrate } from '../schema';
